@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Analytics</title>
   <%= csrf_meta_tags %>
+
 </head>
 <body>
   <h1>Real-time Search Analytics</h1>
@@ -35,6 +36,22 @@
       <!-- Top search results will be displayed here -->
     </ul>
   </div>
+
+  <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
+  <script>
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('730aa68ef78b70a9d947', {
+      cluster: 'eu'
+    });
+
+    var channel = pusher.subscribe('search');
+    channel.bind('create', function(data) {
+      console.log('New search query received:', data);
+    });
+  </script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -85,6 +102,7 @@
               updateAnalytics();
             })
             .catch(error => console.error('Error logging search query:', error));
+
         } else {
           searchResults.innerHTML = '';
         }

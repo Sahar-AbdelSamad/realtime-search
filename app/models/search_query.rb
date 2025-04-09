@@ -1,7 +1,11 @@
 class SearchQuery < ApplicationRecord
   validates :query, presence: true, length: { minimum: 1 }
   validates :user_ip, presence: true
+  after_commit :notify_pusher, on: [:create]
 
+  def notify_pusher
+    Pusher.trigger('search', 'create', self.as_json)
+  end
   # Clean up query data by removing incomplete queries.
   def self.clean_and_save(query, user_ip)
     # Only store complete searches
