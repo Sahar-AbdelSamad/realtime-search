@@ -5,51 +5,108 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Analytics</title>
   <%= csrf_meta_tags %>
+
 </head>
 <body>
-  <h1>Search</h1>
-  <input type="text" id="search-input" placeholder="Search for something...">
+  <h1>Real-time Search Analytics</h1>
 
-  <div id="analytics">
-    <h2>Top Searches</h2>
-    <ul id="top-searches">
-      <!-- Top search results will be displayed here -->
-    </ul>
+  <!-- Display Recent Searches -->
+  <h2>Recent Searches</h2>
+  <ul id="recent-searches-list"></ul>
+  <ul>
+    <% @recent_searches.each do |search| %>
+      <li><strong><%= search.query %></strong> (searched at <%= search.created_at.strftime('%I:%M %p') %>)</li>
+    <% end %>
+  </ul>
+ <div id="searchResults"></div>
+
+  <!-- Search Input Box -->
+  <h2>Search Something:</h2>
+  <div style="position: relative; width: 300px; margin-bottom: 20px;">
+    <input style="width:100%;" type="text" id="search-input" placeholder="Search for something..." autocomplete="off">
+    <!-- X Button to clear input -->
+    <button id="clear-search" style="position: absolute; right: 0px; top: 50%; transform: translateY(-50%); background: transparent; border: none; font-size: 16px; cursor: pointer;">&times;</button>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+ <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
   <script>
-    $(document).ready(function () {
-      $('#search-input').on('input', function () {
-        let query = $(this).val();
-        if (query.length >= 3) {
-          $.ajax({
-            url: '/search_queries',
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('730aa68ef78b70a9d947', {
+      cluster: 'eu'
+    });
+
+    var channel = pusher.subscribe('search');
+    channel.bind('create', function(data) {
+      console.log('New search query received:', data);
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Set up real-time search input logging
+      const searchResults = document.getElementById('searchResults');
+      let searchInput = document.getElementById('search-input');
+      let clearSearchButton = document.getElementById('clear-search');
+      const listElement = document.getElementById('recent-searches-list');
+
+      function formatTime(dateString) {
+      const date = new Date(dateString);
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHours = hours % 12 || 12;
+      const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+      return `${formattedHours}:${formattedMinutes} ${ampm}`;
+    }
+      
+      searchInput.addEventListener('input', function () {
+        let query = searchInput.value;
+        if (query.length > 0) {
+          let data = new FormData();
+          data.append('query', query);
+          data.append('authenticity_token', '<%= form_authenticity_token %>');
+
+          console.log(data);
+
+          fetch('/search_queries', {
             method: 'POST',
-            data: {
-              query: query,
-              authenticity_token: '<%= form_authenticity_token %>'
-            },
-            success: function () {
-              // Optionally update analytics or log the event
-              updateAnalytics();
-            }
-          });
+            body: data
+          })
+            .then(response => response.json())
+            .then((data) => {
+              searchResults.innerHTML = data.result || 'No results found';
+            })
+            .catch(error => console.error('Error logging search query:', error));
+
+        } else {
+          searchResults.innerHTML = '';
         }
       });
 
-      function updateAnalytics() {
-        $.get('/analytics', function (data) {
-          let topSearches = data.top_searches;
-          let list = $('#top-searches');
-          list.empty();
-          topSearches.forEach(function (item) {
-            list.append('<li>' + item.query + ' (' + item.count + ' searches)</li>');
-          });
-        });
-      }
+      // Clear search input when the "X" button is clicked
+      clearSearchButton.addEventListener('click', function () {
+        searchInput.value = '';  // Clear the input field
+        searchResults.innerHTML = '';  // Optionally clear the search results
 
-      updateAnalytics();  // Load initial analytics
+          // Get the UL element
+
+        fetch('/search_queries', {
+            method: 'GET',
+          })
+            .then(response => response.json())
+            .then((data) => {
+              console.log('Search cleared:', data);
+              data.forEach(search => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<strong>${search.query}</strong> (searched at ${formatTime(search.created_at)})`;
+                listElement.appendChild(listItem);
+              });
+            })
+      });
     });
   </script>
 </body>

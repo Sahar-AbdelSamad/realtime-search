@@ -196,9 +196,18 @@ GEM
     rake (13.2.1)
     rdoc (6.13.1)
       psych (>= 4.0.0)
+    redis (4.8.1)
+    redis-client (0.24.0)
+      connection_pool
     reline (0.6.1)
       io-console (~> 0.5)
     securerandom (0.3.2)
+    sidekiq (7.3.9)
+      base64
+      connection_pool (>= 2.3.0)
+      logger
+      rack (>= 2.2.4)
+      redis-client (>= 0.22.2)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -240,6 +249,8 @@ DEPENDENCIES
   puma (>= 5.0)
   pusher
   rails (~> 7.1.5, >= 7.1.5.1)
+  redis (~> 4.0)
+  sidekiq
   sprockets-rails
   stimulus-rails
   turbo-rails

@@ -34,28 +34,22 @@
 
 
 class SearchQueriesController < ApplicationController
+
   def index
-    # Get recent searches to display in the view (optional)
     @recent_searches = SearchQuery.order(created_at: :desc).limit(10)
   end
   def create
     query = params[:query]
     user_ip = request.remote_ip
 
-    # Fetch the last query from the database
-    last_query = SearchQuery.order(created_at: :desc).limit(1).first
+    # Immediately queue the background job to log the search
+    LogSearchQueryJob.perform_later(query, user_ip)
 
-    # Check if the current query differs by 2 or more characters
-    if last_query && (last_query.query.length - query.length).abs == 1 
-      # If the user deleted a character (query is shorter by one character), delete the last query
-      last_query.destroy
-    end
+    Pusher.trigger('search', 'create', { query: query })
 
-    # Save the current query
-    SearchQuery.clean_and_save(query, user_ip)
     # Fetch the most recent query after saving
-    last_query = SearchQuery.order(created_at: :desc).limit(1).first
-    render json: { result: "You searched for #{last_query.query}, ip #{user_ip}" }, status: :ok
+    #last_query = SearchQuery.order(created_at: :desc).limit(1).first
+    render json: { result: "You searched for #{query}, ip #{user_ip}" }, status: :ok
   end
   def analytics
     # Retrieve the top search queries from the 'top_searches' table
