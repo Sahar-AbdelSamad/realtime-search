@@ -8,9 +8,9 @@ class SearchQuery < ApplicationRecord
     return if query.strip.empty?
     SearchQuery.create(query: query, user_ip: user_ip)
 
-    # top_search = TopSearch.find_or_initialize_by(query: query)
-    # top_search.count = top_search.count.to_i + 1
-    # top_search.save
+    top_search = TopSearch.find_or_initialize_by(query: query)
+    top_search.count = top_search.count.to_i + 1
+    top_search.save
   end
 
   # # Aggregate top queries for analytics
