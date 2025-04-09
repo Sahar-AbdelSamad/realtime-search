@@ -24,6 +24,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_08_152219) do
   create_table "top_searches", force: :cascade do |t|
     t.string "query", null: false
     t.integer "count", default: 0
+    t.string "user_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["query"], name: "index_top_searches_on_query", unique: true

@@ -12,7 +12,7 @@
       background-color: #f8f9fa;
       color: #333;
       margin: 0;
-      padding: 40px;
+      padding: 0 30px 30px;
       line-height: 1.6;
     }
 
@@ -21,12 +21,13 @@
     }
 
     h1 {
-      font-size: 2.5em;
+      font-size: 2.3em;
       margin-bottom: 10px;
+      text-align: center;
     }
 
     h2 {
-      font-size: 1.5em;
+      font-size: 1.3em;
       margin-top: 40px;
       margin-bottom: 15px;
     }
@@ -51,7 +52,7 @@
       padding: 12px 40px 12px 15px;
       border: 1px solid #ccc;
       border-radius: 6px;
-      font-size: 16px;
+      font-size: 14px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       transition: border-color 0.3s ease;
     }
@@ -102,6 +103,17 @@
       max-width: 400px;
     }
 
+    .analytics {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .analytics > div {
+      flex: 1;
+      margin-right: 20px;
+    }
+
     .recent-search {
       display: flex;
       justify-content: space-between;
@@ -112,27 +124,32 @@
       color: #2c3e50;
     }
 
-    #analytics {
+   .top-searches {
       max-width: 500px;
     }
 
     @media (max-width: 600px) {
       body {
-        padding: 20px;
+        padding: 0 20px 20px;
       }
 
       #search-input {
-        font-size: 14px;
+        font-size: 12px;
         flex: 1;
         display: block;
       }
 
+      .analytics {
+        display: flex;
+        flex-direction: column;
+      }
+
       h1 {
-        font-size: 2em;
+        font-size: 1.8em;
       }
 
       h2 {
-        font-size: 1.2em;
+        font-size: 1em;
       }
     }
   </style>
@@ -148,17 +165,27 @@
 
   <div id="searchResults"></div>
 
-  <h2>Recent Searches</h2>
-  <ul id="recent-searches"></ul>
-    <% if @recent_searches.empty? %>
-      <li>No recent searches.</li>
-    <% end %>
-  </ul>
+  <section class="analytics">
+    <div>
+      <h2>Recent Searches for user with IP address <%= request.remote_ip %></h2>
+    <ul id="recent-searches"></ul>
 
-  <div id="analytics">
-    <h2>Top Searches for user with IP address <%= request.remote_ip %></h2>
-    <ul id="top-searches"></ul>
-  </div>
+    <div class="top-searches">
+      <h2>Top Searches for user with IP address <%= request.remote_ip %></h2>
+      <ul id="top-searches"></ul>
+    </div>
+    </div>
+
+    <div>
+      <h2>Recent Searches for all users in realtime</h2>
+      <ul id="recent-searches-allusers"></ul>
+
+      <div class="top-searches">
+        <h2>Top Searches for all users in realtime</h2>
+        <ul id="top-searches-allusers"></ul>
+      </div>
+    </div>
+  </section>
 
   <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
   <script>
@@ -193,6 +220,22 @@
               li.className = 'recent-search';
               li.innerHTML = `<strong>${item.query}</strong> ${new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
               recentSearches.appendChild(li);
+            });
+
+            let topSearchesAllUsers = document.getElementById('top-searches-allusers');
+            topSearchesAllUsers.innerHTML = '';
+            data.top_search_allusers.forEach(function (item) {
+              let li = document.createElement('li');
+              li.textContent = `${item.query} ${item.user_ip} (${item.count} searches)`;
+              topSearchesAllUsers.appendChild(li);
+            });
+            let recentSearchesAllUsers = document.getElementById('recent-searches-allusers');
+            recentSearchesAllUsers.innerHTML = '';
+            data.recent_searches_allusers.forEach(function (item) {
+              let li = document.createElement('li');
+              li.className = 'recent-search';
+              li.innerHTML = `<strong>${item.query} <small>${item.user_ip}</small></strong> ${new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+              recentSearchesAllUsers.appendChild(li);
             });
           })
           .catch(error => console.error('Error fetching analytics:', error));
