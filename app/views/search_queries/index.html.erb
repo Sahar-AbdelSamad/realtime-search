@@ -149,9 +149,9 @@
   <div id="searchResults"></div>
 
   <h2>Recent Searches</h2>
-  <ul>
-    <% @recent_searches.each do |search| %>
-      <li class="recent-search"><strong><%= search.query %></strong> <%= search.created_at.strftime('%I:%M %p') %></li>
+  <ul id="recent-searches"></ul>
+    <% if @recent_searches.empty? %>
+      <li>No recent searches.</li>
     <% end %>
   </ul>
 
@@ -184,6 +184,15 @@
               let li = document.createElement('li');
               li.textContent = `${item.query} (${item.count} searches)`;
               list.appendChild(li);
+            });
+
+            let recentSearches = document.getElementById('recent-searches');
+            recentSearches.innerHTML = '';
+            data.recent_searches.forEach(function (item) {
+              let li = document.createElement('li');
+              li.className = 'recent-search';
+              li.innerHTML = `<strong>${item.query}</strong> ${new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+              recentSearches.appendChild(li);
             });
           })
           .catch(error => console.error('Error fetching analytics:', error));
@@ -219,6 +228,8 @@
       clearSearchButton.addEventListener('click', function () {
         searchInput.value = '';
         searchResults.innerHTML = '';
+
+        updateAnalytics();
       });
     });
   </script>
