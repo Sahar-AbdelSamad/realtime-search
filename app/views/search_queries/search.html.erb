@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Analytics</title>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <h1>Search</h1>
+  <input type="text" id="search-input" placeholder="Search for something...">
+
+  <div id="analytics">
+    <h2>Top Searches</h2>
+    <ul id="top-searches">
+      <!-- Top search results will be displayed here -->
+    </ul>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#search-input').on('input', function () {
+        let query = $(this).val();
+        if (query.length >= 3) {
+          $.ajax({
+            url: '/search_queries',
+            method: 'POST',
+            data: {
+              query: query,
+              authenticity_token: '<%= form_authenticity_token %>'
+            },
+            success: function () {
+              // Optionally update analytics or log the event
+              updateAnalytics();
+            }
+          });
+        }
+      });
+
+      function updateAnalytics() {
+        $.get('/analytics', function (data) {
+          let topSearches = data.top_searches;
+          let list = $('#top-searches');
+          list.empty();
+          topSearches.forEach(function (item) {
+            list.append('<li>' + item.query + ' (' + item.count + ' searches)</li>');
+          });
+        });
+      }
+
+      updateAnalytics();  // Load initial analytics
+    });
+  </script>
+</body>
+</html>

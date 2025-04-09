@@ -1,0 +1,38 @@
+current directory: /home/sahar/Sahar/Career/Web Dev/Job-applications/helpjuice2/search_analytics/vendor/bundle/ruby/3.0.0/gems/io-console-0.8.0/ext/io/console
+/home/sahar/.rbenv/versions/3.0.0/bin/ruby -I /home/sahar/.rbenv/versions/3.0.0/lib/ruby/3.0.0 -r ./siteconf20250408-226423-59wdim.rb extconf.rb
+checking for rb_syserr_fail_str(0, Qnil)... yes
+checking for rb_interned_str_cstr()... yes
+checking for rb_io_path()... no
+checking for rb_io_descriptor()... no
+checking for rb_io_get_write_io()... yes
+checking for rb_io_closed_p()... no
+checking for rb_io_open_descriptor()... no
+checking for rb_ractor_local_storage_value_newkey()... yes
+checking for termios.h... yes
+checking for cfmakeraw() in termios.h... yes
+checking for sys/ioctl.h... yes
+checking for HAVE_RUBY_FIBER_SCHEDULER_H... no
+checking for rb_scheduler_timeout()... no
+checking for ttyname_r()... yes
+creating Makefile
+
+current directory: /home/sahar/Sahar/Career/Web Dev/Job-applications/helpjuice2/search_analytics/vendor/bundle/ruby/3.0.0/gems/io-console-0.8.0/ext/io/console
+make "DESTDIR=" clean
+
+current directory: /home/sahar/Sahar/Career/Web Dev/Job-applications/helpjuice2/search_analytics/vendor/bundle/ruby/3.0.0/gems/io-console-0.8.0/ext/io/console
+make "DESTDIR="
+compiling console.c
+console.c: In function ‘console_dev_get’:
+console.c:1592:12: warning: implicit declaration of function ‘rb_ractor_local_storage_value_lookup’; did you mean ‘rb_ractor_local_storage_value_newkey’? [-Wimplicit-function-declaration]
+ 1592 |     return rb_ractor_local_storage_value_lookup(key_console_dev, dev);
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |            rb_ractor_local_storage_value_newkey
+console.c: At top level:
+cc1: warning: unrecognized command line option ‘-Wno-self-assign’
+cc1: warning: unrecognized command line option ‘-Wno-parentheses-equality’
+cc1: warning: unrecognized command line option ‘-Wno-constant-logical-operand’
+linking shared-object io/console.so
+
+current directory: /home/sahar/Sahar/Career/Web Dev/Job-applications/helpjuice2/search_analytics/vendor/bundle/ruby/3.0.0/gems/io-console-0.8.0/ext/io/console
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 console.so ./.gem.20250408-226423-ykp2ny/io

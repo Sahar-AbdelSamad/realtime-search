@@ -1,0 +1,15 @@
+current directory: /home/sahar/Sahar/Career/Web Dev/Job-applications/helpjuice2/search_analytics/vendor/bundle/ruby/3.0.0/gems/racc-1.8.1/ext/racc/cparse
+/home/sahar/.rbenv/versions/3.0.0/bin/ruby -I /home/sahar/.rbenv/versions/3.0.0/lib/ruby/3.0.0 -r ./siteconf20250408-226423-ivsm0y.rb extconf.rb
+creating Makefile
+
+current directory: /home/sahar/Sahar/Career/Web Dev/Job-applications/helpjuice2/search_analytics/vendor/bundle/ruby/3.0.0/gems/racc-1.8.1/ext/racc/cparse
+make "DESTDIR=" clean
+
+current directory: /home/sahar/Sahar/Career/Web Dev/Job-applications/helpjuice2/search_analytics/vendor/bundle/ruby/3.0.0/gems/racc-1.8.1/ext/racc/cparse
+make "DESTDIR="
+compiling cparse.c
+linking shared-object racc/cparse.so
+
+current directory: /home/sahar/Sahar/Career/Web Dev/Job-applications/helpjuice2/search_analytics/vendor/bundle/ruby/3.0.0/gems/racc-1.8.1/ext/racc/cparse
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 cparse.so ./.gem.20250408-226423-f31i64/racc

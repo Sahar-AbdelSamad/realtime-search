@@ -1,0 +1,101 @@
+<!-- app/views/search_queries/index.html.erb -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Analytics</title>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <h1>Real-time Search Analytics</h1>
+
+  <!-- Display Recent Searches -->
+  <h2>Recent Searches</h2>
+  <ul>
+    <% @recent_searches.each do |search| %>
+      <li><strong><%= search.query %></strong> (searched at <%= search.created_at.strftime('%I:%M %p') %>)</li>
+    <% end %>
+  </ul>
+
+  <div id="searchResults"></div>
+  
+  <!-- Search Input Box -->
+  <h2>Search Something:</h2>
+  <div style="position: relative; width: 300px; margin-bottom: 20px;">
+    <input style="width:100%;" type="text" id="search-input" placeholder="Search for something..." autocomplete="off">
+    <!-- X Button to clear input -->
+    <button id="clear-search" style="position: absolute; right: 0px; top: 50%; transform: translateY(-50%); background: transparent; border: none; font-size: 16px; cursor: pointer;">&times;</button>
+  </div>
+
+  <!-- Top Searches Section -->
+  <div id="analytics">
+    <h2>Top Searches</h2>
+    <ul id="top-searches">
+      <!-- Top search results will be displayed here -->
+    </ul>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Function to update the list of top searches
+      function updateAnalytics() {
+        fetch('/analytics')
+          .then(response => response.json())
+          .then(data => {
+            let topSearches = data.top_searches;
+            let list = document.getElementById('top-searches');
+            list.innerHTML = '';  // Clear the list before appending new data
+
+            // Loop through topSearches and create list items
+            topSearches.forEach(function (item) {
+              let listItem = document.createElement('li');
+              listItem.textContent = `${item.query} (${item.count} searches)`;
+              list.appendChild(listItem);
+            });
+          })
+          .catch(error => console.error('Error fetching analytics:', error));
+      }
+
+      // Update the analytics on page load
+      updateAnalytics();
+
+      // Set up real-time search input logging
+      const searchResults = document.getElementById('searchResults');
+      let searchInput = document.getElementById('search-input');
+      let clearSearchButton = document.getElementById('clear-search');
+      
+      searchInput.addEventListener('input', function () {
+        let query = searchInput.value;
+        if (query.length > 0) {
+          let data = new FormData();
+          data.append('query', query);
+          data.append('authenticity_token', '<%= form_authenticity_token %>');
+
+          console.log(data);
+
+          fetch('/search_queries', {
+            method: 'POST',
+            body: data
+          })
+            .then(response => response.json())
+            .then((data) => {
+              searchResults.innerHTML = data.result || 'No results found';
+              // Optionally update analytics after a successful search log
+              updateAnalytics();
+            })
+            .catch(error => console.error('Error logging search query:', error));
+        } else {
+          searchResults.innerHTML = '';
+        }
+      });
+
+      // Clear search input when the "X" button is clicked
+      clearSearchButton.addEventListener('click', function () {
+        searchInput.value = '';  // Clear the input field
+        searchResults.innerHTML = '';  // Optionally clear the search results
+      });
+    });
+  </script>
+</body>
+</html>
