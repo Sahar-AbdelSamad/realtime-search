@@ -175,13 +175,13 @@
     <div>
       <%# This is the search analytics for the current user (IP address). %>
       <h2>Recent Searches for you</h2>
-    <ul id="recent-searches"></ul>
+      <ul id="recent-searches"></ul>
 
-    <div class="top-searches">
-      <%# This is the top searches for the current user (IP address) %>
-      <h2>Top Searches for you</h2>
-      <ul id="top-searches"></ul>
-    </div>
+      <div class="top-searches">
+        <%# This is the top searches for the current user (IP address) %>
+        <h2>Top Searches for you</h2>
+        <ul id="top-searches"></ul>
+      </div>
     </div>
 
     <div>
@@ -202,52 +202,83 @@
     });
 
     var channel = pusher.subscribe('search');
-    channel.bind('create', function(data) {
-      console.log('New search query received:', data);
-    });
+    channel.bind('close', function(data) {
+       let list = document.getElementById('top-searches');
+        list.innerHTML = '';
+        data.top_search.forEach(function (item) {
+          let li = document.createElement('li');
+          li.textContent = `${item.query} (${item.count} searches)`;
+          list.appendChild(li);
+        });
+
+        let recentSearches = document.getElementById('recent-searches');
+        recentSearches.innerHTML = '';
+        data.recent_searches.forEach(function (item) {
+          let li = document.createElement('li');
+          li.className = 'recent-search';
+          li.innerHTML = `<strong>${item.query}</strong> ${new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+          recentSearches.appendChild(li);
+        });
+
+        let topSearchesAllUsers = document.getElementById('top-searches-allusers');
+        topSearchesAllUsers.innerHTML = '';
+        data.top_search_allusers.forEach(function (item) {
+          let li = document.createElement('li');
+          li.textContent = `${item.query} (${item.count} searches)`;
+          topSearchesAllUsers.appendChild(li);
+        });
+        let recentSearchesAllUsers = document.getElementById('top_search_last_30_days');
+        recentSearchesAllUsers.innerHTML = '';
+        data.top_search_last_30_days.forEach(function (item) {
+          let li = document.createElement('li');
+          li.className = 'recent-search';
+          li.innerHTML = `<strong>${item.query}</strong> ${new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+          recentSearchesAllUsers.appendChild(li);
+        });
+      });
   </script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       function updateAnalytics() {
-        fetch('/analytics')
-          .then(response => response.json())
-          .then(data => {
-            let list = document.getElementById('top-searches');
-            list.innerHTML = '';
-            data.top_search.forEach(function (item) {
-              let li = document.createElement('li');
-              li.textContent = `${item.query} (${item.count} searches)`;
-              list.appendChild(li);
-            });
+            fetch('/analytics')
+              .then(response => response.json())
+              .then(data => {
+                let list = document.getElementById('top-searches');
+                list.innerHTML = '';
+                data.top_search.forEach(function (item) {
+                  let li = document.createElement('li');
+                  li.textContent = `${item.query} (${item.count} searches)`;
+                  list.appendChild(li);
+                });
 
-            let recentSearches = document.getElementById('recent-searches');
-            recentSearches.innerHTML = '';
-            data.recent_searches.forEach(function (item) {
-              let li = document.createElement('li');
-              li.className = 'recent-search';
-              li.innerHTML = `<strong>${item.query}</strong> ${new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-              recentSearches.appendChild(li);
-            });
+                let recentSearches = document.getElementById('recent-searches');
+                recentSearches.innerHTML = '';
+                data.recent_searches.forEach(function (item) {
+                  let li = document.createElement('li');
+                  li.className = 'recent-search';
+                  li.innerHTML = `<strong>${item.query}</strong> ${new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                  recentSearches.appendChild(li);
+                });
 
-            let topSearchesAllUsers = document.getElementById('top-searches-allusers');
-            topSearchesAllUsers.innerHTML = '';
-            data.top_search_allusers.forEach(function (item) {
-              let li = document.createElement('li');
-              li.textContent = `${item.query} (${item.count} searches)`;
-              topSearchesAllUsers.appendChild(li);
-            });
-            let recentSearchesAllUsers = document.getElementById('top_search_last_30_days');
-            recentSearchesAllUsers.innerHTML = '';
-            data.top_search_last_30_days.forEach(function (item) {
-              let li = document.createElement('li');
-              li.className = 'recent-search';
-              li.innerHTML = `<strong>${item.query}</strong> ${new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-              recentSearchesAllUsers.appendChild(li);
-            });
-          })
-          .catch(error => console.error('Error fetching analytics:', error));
-      }
+                let topSearchesAllUsers = document.getElementById('top-searches-allusers');
+                topSearchesAllUsers.innerHTML = '';
+                data.top_search_allusers.forEach(function (item) {
+                  let li = document.createElement('li');
+                  li.textContent = `${item.query} (${item.count} searches)`;
+                  topSearchesAllUsers.appendChild(li);
+                });
+                let recentSearchesAllUsers = document.getElementById('top_search_last_30_days');
+                recentSearchesAllUsers.innerHTML = '';
+                data.top_search_last_30_days.forEach(function (item) {
+                  let li = document.createElement('li');
+                  li.className = 'recent-search';
+                  li.innerHTML = `<strong>${item.query}</strong> ${new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                  recentSearchesAllUsers.appendChild(li);
+                });
+              })
+              .catch(error => console.error('Error fetching analytics:', error));
+            }
 
       updateAnalytics();
 
@@ -279,7 +310,7 @@
       });
 
       clearSearchButton.addEventListener('click', function () {
-          searchResults.classList.remove('active');
+        searchResults.classList.remove('active');
         searchInput.value = '';
         searchResults.innerHTML = '';
 

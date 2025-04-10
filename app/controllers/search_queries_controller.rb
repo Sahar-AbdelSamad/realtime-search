@@ -32,8 +32,6 @@ class SearchQueriesController < ApplicationController
 
     SearchQuery.clean_and_save(query, user_ip)
 
-    Pusher.trigger('search', 'create', { query: query })
-
     render json: { result: "You searched for #{query}, ip #{user_ip}" }, status: :ok
   end
   def analytics
@@ -43,6 +41,9 @@ class SearchQueriesController < ApplicationController
 
     @top_search_last_30_days = TopSearch.where('created_at >= ?', 30.days.ago).order(count: :desc).limit(10)
     @top_search_allusers = TopSearch.order(count: :desc).limit(10)
+
+
+    Pusher.trigger('search', 'close', { top_search: @top_search, recent_searches: @recent_searches, top_search_last_30_days: @top_search_last_30_days, top_search_allusers: @top_search_allusers })
 
     render json: { top_search: @top_search, recent_searches: @recent_searches, top_search_last_30_days: @top_search_last_30_days, top_search_allusers: @top_search_allusers }, status: :ok
   end
