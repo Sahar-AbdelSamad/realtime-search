@@ -12,7 +12,7 @@
 
 ## Video
 
-[Here's a video presenting the features of the project](https://www.loom.com/share/8d4c963434054328a340a26d6beea198)
+[Here's a video presenting the features of the project](https://www.loom.com/share/12e1b94c5af24c1eb7c2e7c4cfa9d4ab)
 
 ## Live Demo
 
