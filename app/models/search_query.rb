@@ -12,23 +12,5 @@ class SearchQuery < ApplicationRecord
     top_search.count = top_search.count.to_i + 1
     top_search.save
   end
-
-  # # Aggregate top queries for analytics
-  # def self.log_query(query)
-  #   # Find the existing search query or create a new one
-  #   search = TopSearch.find_or_initialize_by(query: query)
-
-  #   # Increment the count by 1
-  #   search.count ||= 0
-  #   search.count += 1
-
-  #   # Save the record
-  #   search.save
-  # end
-
-  # def self.top_searches
-  #   # Retrieve top search queries ordered by the most searched (highest count)
-  #   TopSearch.order(count: :desc).limit(10)
-  # end
 end
 

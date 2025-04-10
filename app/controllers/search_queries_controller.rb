@@ -9,7 +9,7 @@ class SearchQueriesController < ApplicationController
     @top_search_allusers = TopSearch.order(count: :desc).limit(10)
   end
   def create
-    query = params[:query]
+    query = params[:query].downcase
     user_ip = request.remote_ip
 
     # Immediately queue the background job to log the search

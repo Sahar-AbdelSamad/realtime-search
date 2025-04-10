@@ -85,7 +85,13 @@
       border-radius: 6px;
       border: 1px solid #ddd;
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      max-width: 400px;
+      max-width: 550px;
+      margin: 0 auto;
+      display: none;
+    }
+
+    #searchResults.active {
+      display: block;
     }
 
     ul {
@@ -252,6 +258,7 @@
       searchInput.addEventListener('input', function () {
         let query = searchInput.value;
         if (query.length > 0) {
+          searchResults.classList.add('active');
           let data = new FormData();
           data.append('query', query);
           data.append('authenticity_token', '<%= form_authenticity_token %>');
@@ -267,10 +274,12 @@
           .catch(error => console.error('Error logging search query:', error));
         } else {
           searchResults.innerHTML = '';
+          searchResults.classList.remove('active');
         }
       });
 
       clearSearchButton.addEventListener('click', function () {
+          searchResults.classList.remove('active');
         searchInput.value = '';
         searchResults.innerHTML = '';
 
