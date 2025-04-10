@@ -4,8 +4,8 @@ class SearchQueriesController < ApplicationController
     user_ip = request.remote_ip
     @recent_searches = SearchQuery.where(user_ip: user_ip).order(created_at: :desc).limit(10)
     @top_search = TopSearch.where(user_ip: user_ip).order(count: :desc).limit(10) 
-    
-    @recent_searches_allusers = SearchQuery.order(created_at: :desc).limit(10)
+
+    @top_search_last_30_days = TopSearch.where('created_at >= ?', 30.days.ago).order(count: :desc).limit(10)
     @top_search_allusers = TopSearch.order(count: :desc).limit(10)
   end
   def create
@@ -41,9 +41,9 @@ class SearchQueriesController < ApplicationController
     @recent_searches = SearchQuery.where(user_ip: user_ip).order(created_at: :desc).limit(10)
     @top_search = TopSearch.where(user_ip: user_ip).order(count: :desc).limit(10)
 
-    @recent_searches_allusers = SearchQuery.order(created_at: :desc).limit(10)
+    @top_search_last_30_days = TopSearch.where('created_at >= ?', 30.days.ago).order(count: :desc).limit(10)
     @top_search_allusers = TopSearch.order(count: :desc).limit(10)
 
-    render json: { top_search: @top_search, recent_searches: @recent_searches, recent_searches_allusers: @recent_searches_allusers, top_search_allusers: @top_search_allusers }, status: :ok
+    render json: { top_search: @top_search, recent_searches: @recent_searches, top_search_last_30_days: @top_search_last_30_days, top_search_allusers: @top_search_allusers }, status: :ok
   end
 end

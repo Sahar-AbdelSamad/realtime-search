@@ -5,6 +5,10 @@ gem 'pusher'
 gem 'figaro'
 gem 'sidekiq'
 gem 'redis', '~> 4.0'
+gem 'dotenv-rails'
+gem 'nokogiri', '>= 1.14'
+
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.5", ">= 7.1.5.1"
 

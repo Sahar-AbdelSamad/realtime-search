@@ -167,23 +167,25 @@
 
   <section class="analytics">
     <div>
-      <h2>Recent Searches for user with IP address <%= request.remote_ip %></h2>
+      <%# This is the search analytics for the current user (IP address). %>
+      <h2>Recent Searches for you</h2>
     <ul id="recent-searches"></ul>
 
     <div class="top-searches">
-      <h2>Top Searches for user with IP address <%= request.remote_ip %></h2>
+      <%# This is the top searches for the current user (IP address) %>
+      <h2>Top Searches for you</h2>
       <ul id="top-searches"></ul>
     </div>
     </div>
 
     <div>
-      <h2>Recent Searches for all users in realtime</h2>
-      <ul id="recent-searches-allusers"></ul>
-
       <div class="top-searches">
         <h2>Top Searches for all users in realtime</h2>
+        <%# This is the top searches for all users with defferent ip addresses %>
         <ul id="top-searches-allusers"></ul>
       </div>
+      <h2>Top Searches for all users in the last 30 days in realtime</h2>
+      <ul id="top_search_last_30_days"></ul>
     </div>
   </section>
 
@@ -226,15 +228,15 @@
             topSearchesAllUsers.innerHTML = '';
             data.top_search_allusers.forEach(function (item) {
               let li = document.createElement('li');
-              li.textContent = `${item.query} ${item.user_ip} (${item.count} searches)`;
+              li.textContent = `${item.query} (${item.count} searches)`;
               topSearchesAllUsers.appendChild(li);
             });
-            let recentSearchesAllUsers = document.getElementById('recent-searches-allusers');
+            let recentSearchesAllUsers = document.getElementById('top_search_last_30_days');
             recentSearchesAllUsers.innerHTML = '';
-            data.recent_searches_allusers.forEach(function (item) {
+            data.top_search_last_30_days.forEach(function (item) {
               let li = document.createElement('li');
               li.className = 'recent-search';
-              li.innerHTML = `<strong>${item.query} <small>${item.user_ip}</small></strong> ${new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+              li.innerHTML = `<strong>${item.query}</strong> ${new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
               recentSearchesAllUsers.appendChild(li);
             });
           })
