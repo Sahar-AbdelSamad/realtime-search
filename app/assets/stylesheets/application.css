@@ -13,3 +13,154 @@
  *= require_tree .
  *= require_self
  */
+ body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  margin: 0;
+  padding: 0 30px 30px;
+  line-height: 1.6;
+}
+
+h1, h2 {
+  color: #2c3e50;
+}
+
+h1 {
+  font-size: 2.3em;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.3em;
+  margin-top: 40px;
+  margin-bottom: 15px;
+}
+
+.search-box-title {
+  text-align: center;
+}
+
+.search-box {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+#search-input {
+  width: 100%;
+  padding: 12px 40px 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease;
+}
+
+#search-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+#clear-search {
+  position: absolute;
+  right: 10px;
+  top: 46%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 30px;
+  color: #999;
+  cursor: pointer;
+}
+
+#clear-search:hover {
+  color: #333;
+}
+
+#searchResults {
+  margin-top: 10px;
+  padding: 10px 15px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  max-width: 550px;
+  margin: 0 auto;
+  display: none;
+}
+
+#searchResults.active {
+  display: block;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+li {
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  max-width: 400px;
+}
+
+.analytics {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.analytics > div {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.recent-search {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+strong {
+  color: #2c3e50;
+}
+
+.top-searches {
+  max-width: 500px;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 0 20px 20px;
+  }
+
+  #search-input {
+    font-size: 12px;
+    flex: 1;
+    display: block;
+  }
+
+  .analytics {
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 1.8em;
+  }
+
+  h2 {
+    font-size: 1em;
+  }
+}
