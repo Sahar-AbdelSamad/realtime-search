@@ -20,8 +20,9 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
-  <<: *default
-  database: search_analytics_development
+  url: <%= ENV['DATABASE_URL'] %>
+  pool: 5
+  timeout: 5000
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -77,8 +78,7 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
+
 production:
-  <<: *default
-  database: <%= ENV['SEARCH_ANALYTICS_DB_NAME'] %>
-  username: <%= ENV['SEARCH_ANALYTICS_DB_USERNAME'] %>
-  password: <%= ENV['SEARCH_ANALYTICS_DB_PASSWORD'] %>
+  url: <%= Rails.application.credentials.dig(:production, :database, :url) %>
+
